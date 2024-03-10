@@ -1,0 +1,11 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+    <p class="lead">GDP by Country</p>
+    <div class="row">
+        <div id="linechart" class="col-10">
+            {% include 'partials/gdp_bar.html' %}
+        </div>
+    </div>
+
+{% endblock %}

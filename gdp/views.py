@@ -1,4 +1,4 @@
-import math
+import math, re
 from django.shortcuts import render
 from gdp.models import GDP
 from django.db.models import Max, Min
@@ -9,7 +9,9 @@ from bokeh.models import ColumnDataSource, NumeralTickFormatter, HoverTool
 from bokeh.embed import components
 from bokeh.plotting import figure
 from bokeh.resources import CDN
-from bokeh.palettes import Bright6
+
+from pandas import read_csv
+
 
 def index(request):
     max_year = GDP.objects.aggregate(max_yr = Max('year'))['max_yr']
@@ -87,4 +89,26 @@ def line(request):
         return render(request, 'partials/gdp_bar.html', context)
 
     return render(request, 'line.html', context)
+
+
+def gdp_csv(request):
+    data = read_csv("data\GDP.csv", nrows=20)
+    countries = data['country'].tolist()
+    gdps = data['gdp'].tolist()
+
+    fig = figure(x_range=countries, height=400, title="GDP", tools="")
+    fig.title.align = 'center'
+    fig.title.text_font_size = '1.5em'
+    fig.yaxis[0].formatter = NumeralTickFormatter(format='$0.0a')
+    fig.xaxis.major_label_orientation = math.pi / 4
+
+    fig.vbar(x=countries, top=gdps, width=0.5)
+    
+    html = file_html(fig, CDN, "Countries GDP")
+
+    context = {
+        'html': html
+    }
+
+    return render(request, 'country.html', context)
 
