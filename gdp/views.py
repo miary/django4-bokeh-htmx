@@ -38,7 +38,7 @@ def index(request):
         ('GDP', '@country_gdps{,}')
     ]
     fig.add_tools(HoverTool(tooltips=tooltips))
-    html = file_html(fig, CDN, "my plot")
+    html = file_html(fig, CDN, "Plot GDP")
 
     context = {
         'html': html,
